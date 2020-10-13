@@ -52,30 +52,6 @@ jobs:
       - name: test
         run: ./build/release/src/unit_tests_runner
 
-  ubuntu18-superbuild:
-    name: ubuntu-18.04 (backend, superbuild)
-    runs-on: ubuntu-18.04
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: recursive
-      - name: configure
-        run: cmake -DCMAKE_BUILD_TYPE=Release -DSUPERBUILD=ON -DBUILD_BACKEND=ON -DWERROR=ON -j 2 -Bbuild/release -H.
-      - name: build
-        run: cmake --build build/release -j 2
-      - name: install
-        run: sudo cmake --build build/release --target install
-      - name: install examples dependencies
-        run: sudo apt-get install -y libsdl2-dev
-      - name: configure examples
-        run: (cd examples && cmake -DCMAKE_BUILD_TYPE=Release -DWERROR=ON -j 2 -Bbuild -H.)
-      - name: build examples
-        run: (cd examples && cmake --build build -j 2)
-      - name: test
-        run: ./build/release/src/unit_tests_runner
-      - name: test (mavsdk_server)
-        run: ./build/release/src/backend/test/unit_tests_backend
-
   ubuntu20-proto-check:
     name: ubuntu-20.04 (proto check)
     runs-on: ubuntu-20.04
@@ -130,7 +106,6 @@ jobs:
       - name: build
         run: ./dockcross-${{ matrix.arch_name }} cmake --build build/${{ matrix.arch_name }} -j 2 --target install
       - name: Publish artefacts
-        if: startsWith(github.ref, 'refs/tags/v')
         uses: svenstaro/upload-release-action@v1-release
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
