@@ -106,7 +106,6 @@ jobs:
       - name: build
         run: ./dockcross-${{ matrix.arch_name }} cmake --build build/${{ matrix.arch_name }} -j 2 --target install
       - name: Publish artefacts
-        if: startsWith(github.ref, 'refs/tags/v')
         uses: svenstaro/upload-release-action@v1-release
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
